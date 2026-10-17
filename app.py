@@ -9,33 +9,10 @@ st.set_page_config(page_title="Img to Word Math", page_icon="📐")
 st.title("📸 a 📝 Generador de Ecuaciones Word")
 st.markdown("Sube imágenes (de Mathcad, libros, apuntes) y descarga un archivo `.docx` con las ecuaciones nativas listas para Word.")
 
-# Sidebar para la API Key y Selección Dinámica
+# Sidebar para la API Key
 st.sidebar.header("Configuración")
 api_key = st.sidebar.text_input("Ingresa tu API Key de Gemini:", type="password")
 st.sidebar.markdown("[Obtén tu API Key aquí](https://aistudio.google.com/app/apikey)")
-
-selected_model_name = None
-
-# Si hay una API Key, consultamos los modelos reales disponibles
-if api_key:
-    genai.configure(api_key=api_key)
-    try:
-        available_models = []
-        # Le pedimos a Google la lista exacta de tus modelos permitidos
-        for m in genai.list_models():
-            if 'generateContent' in m.supported_generation_methods:
-                available_models.append(m.name.replace('models/', ''))
-        
-        if available_models:
-            st.sidebar.success("✅ API Key conectada")
-            # Creamos un menú desplegable con los modelos válidos
-            selected_model_name = st.sidebar.selectbox(
-                "Selecciona un modelo de IA:", 
-                available_models,
-                index=0
-            )
-    except Exception as e:
-        st.sidebar.error("Error validando la API Key. Verifica que esté bien copiada.")
 
 # Subida de múltiples archivos
 uploaded_files = st.file_uploader("Sube tus imágenes con ecuaciones", type=["png", "jpg", "jpeg"], accept_multiple_files=True)
@@ -43,15 +20,15 @@ uploaded_files = st.file_uploader("Sube tus imágenes con ecuaciones", type=["pn
 if st.button("Generar Documento Word"):
     if not api_key:
         st.error("Por favor, ingresa tu API Key en el menú lateral.")
-    elif not selected_model_name:
-        st.error("Espera a que se carguen los modelos disponibles en el menú lateral.")
     elif not uploaded_files:
         st.warning("Sube al menos una imagen antes de continuar.")
     else:
-        # Usamos el modelo que tú seleccionaste del menú desplegable
-        model = genai.GenerativeModel(selected_model_name)
+        genai.configure(api_key=api_key)
         
-        with st.spinner(f"Procesando imágenes con {selected_model_name}..."):
+        # MODELO FIJO: Usamos directamente la versión 3.8-flash solicitada por Google
+        model = genai.GenerativeModel('gemini-3.8-flash')
+        
+        with st.spinner("Procesando imágenes con IA y construyendo el documento..."):
             md_content = "# Ecuaciones Extraídas\n\n"
             
             for i, file in enumerate(uploaded_files):
