@@ -24,8 +24,9 @@ if st.button("Generar Documento Word"):
         st.warning("Sube al menos una imagen antes de continuar.")
     else:
         genai.configure(api_key=api_key)
-        # Usamos el modelo flash por su rapidez y excelente visión
-        model = genai.GenerativeModel('gemini-1.5-flash')
+        
+        # ESTA ES LA LÍNEA CORREGIDA PARA EVITAR EL ERROR 404:
+        model = genai.GenerativeModel('gemini-1.5-flash-latest')
         
         with st.spinner("Procesando imágenes con IA y construyendo el documento..."):
             md_content = "# Ecuaciones Extraídas\n\n"
@@ -35,7 +36,7 @@ if st.button("Generar Documento Word"):
                 st.image(img, caption=f"Imagen {i+1}", width=400)
                 
                 # Prompt estricto para obtener solo LaTeX
-                prompt = "Extrae las ecuaciones matemáticas de esta imagen. Devuelve ÚNICAMENTE el código LaTeX de la ecuación, encerrado entre doble signo de dólar ($$ ecuacion $$). No agregues texto extra, ni explicaciones, solo el bloque de la ecuación."
+                prompt = "Extrae las ecuaciones matemáticas de esta imagen. Devuelve ÚNICAMENTE el código LaTeX de la ecuación, encerrado entre doble signo de dólar ($$ecuacion$$). No agregues texto extra, ni explicaciones, solo el bloque de la ecuación."
                 
                 try:
                     response = model.generate_content([prompt, img])
