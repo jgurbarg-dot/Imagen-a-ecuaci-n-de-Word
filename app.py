@@ -25,8 +25,8 @@ if st.button("Generar Documento Word"):
     else:
         genai.configure(api_key=api_key)
         
-        # ESTA ES LA LÍNEA CORREGIDA PARA EVITAR EL ERROR 404:
-        model = genai.GenerativeModel('gemini-1.5-flash-latest')
+        # SOLUCIÓN: Usamos el nombre estricto de la versión base
+        model = genai.GenerativeModel('gemini-1.5-flash-001')
         
         with st.spinner("Procesando imágenes con IA y construyendo el documento..."):
             md_content = "# Ecuaciones Extraídas\n\n"
