@@ -25,8 +25,8 @@ if st.button("Generar Documento Word"):
     else:
         genai.configure(api_key=api_key)
         
-        # SOLUCIÓN: Usamos el nombre estricto de la versión base
-        model = genai.GenerativeModel('gemini-1.5-flash-001')
+        # CAMBIO DEFINITIVO: Usamos la versión Pro universal
+        model = genai.GenerativeModel('gemini-1.5-pro')
         
         with st.spinner("Procesando imágenes con IA y construyendo el documento..."):
             md_content = "# Ecuaciones Extraídas\n\n"
